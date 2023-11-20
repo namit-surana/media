@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity > 0.7.0;
+
+contract Bank{
+    mapping (address => uint) public user_account;
+    mapping (address => bool) public user_exist;
+
+    function create_account() public payable  returns(string memory)
+    {
+        require(user_exist[msg.sender] == false,"Account Already Exist");
+        user_account[msg.sender] = msg.value;
+        user_exist[msg.sender] = true;
+        return "Account Created Successfully";
+    }
+
+    function deposit(uint amount) public payable returns(string memory)
+    {
+        require(user_exist[msg.sender]==true,"Account should be created first");
+        require(amount >0 ,"Amount should be greater than zero");
+        user_account[msg.sender] += amount;
+        return "Money Deposited Successfully";
+    }
+
+    function withdraw(uint amount) public payable returns(string memory)
+    {
+        require(user_exist[msg.sender] == true,"Account should be created first");
+        require(amount > 0,"Amount should be greater than zero");
+        require(user_account[msg.sender] >= amount,"Ammount entered is greater than amount");
+        user_account[msg.sender] -= amount;
+        return "Money withdrawal done successfully";
+    }
+    function account_balance() public view returns( uint){
+        return user_account[msg.sender];
+    }
+    function account_exist() public view returns(bool)
+    {
+        return user_exist[msg.sender];
+    }
+
+}
